@@ -4,33 +4,30 @@ console.log("Ingredient: "+Ingredient); // pour vérifier si l'object est bien c
 
 
 // Configuration de la connexion à MongoDB
-const db = 'mongodb://localhost:27017/recettes'; // Remplacez par votre URL de MongoDB
+const db = 'mongodb://127.0.0.1:27017/recettes'; // Remplacez par votre URL de MongoDB
 mongoose.connect(db)
   .then(() => console.log('Connecté à la base de données MongoDB'))
   .catch(err => console.error('Erreur de connexion à MongoDB', err));
 
 // Liste des ingrédients à ajouter
 const ingredients = [
-  { name: 'Tomate2', nutritionInfo: { calories: 18, protein: 0.9, fat: 0.2 } },
-  { name: 'Pomme de terre2', nutritionInfo: { calories: 77, protein: 2.0, fat: 0.1 } },
-  { name: 'Chocolat', nutritionInfo: { calories: 150, protein: 5.0, fat: 2.1 } },
-  { name: 'Laitue romaine', nutritionInfo: { calories: 25, protein: 0.1, fat: 0.0 } }  
+  { name: 'Tomate2', quantite: 1, nutritionInfo: { calories: 18, protein: 0.9, fat: 0.2 } },
+  { name: 'Pomme de terre2', quantite: 1.0, nutritionInfo: { calories: 77, protein: 2.0, fat: 0.1 } },
+  { name: 'Chocolat',quantite: 2.0, nutritionInfo: { calories: 150.0, protein: 5.0, fat: 2.1 } },
+  { name: 'Laitue romaine',quantite: 1.0, nutritionInfo: { calories: 25.0, protein: 0.1, fat: 0.0 } }  
 ];
 
 // Fonction pour ajouter des ingrédients
 async function addIngredients() {
   try {
-    for (const ingredient of ingredients) {
-      console.log("ingredient:", JSON.stringify(ingredient, null, 2));
-      const newIngredient = new Ingredient(ingredient);      
-      console.log("newIngredient: "+newIngredient);
-      await newIngredient.save();
-    }
-    console.log('Ingrédients ajoutés avec succès');
+    // Utilisez `insertMany` pour insérer en masse
+    const insertedIngredients = await Ingredient.insertMany(ingredients);
+    console.log(`${insertedIngredients.length} ingrédients ajoutés avec succès`);
   } catch (err) {
     console.error('Erreur lors de l\'ajout des ingrédients', err);
   } finally {
-    mongoose.disconnect();
+    // Fermez la connexion seulement si vous ne comptez plus faire d'autres opérations après
+    await mongoose.disconnect();
   }
 }
 

@@ -1,3 +1,6 @@
+
+//ingredientController.js
+
 const Ingredient = require('../models/ingredientModel'); // Assurez-vous que le chemin est correct
 
 // Ajouter un nouvel ingrédient
@@ -91,3 +94,25 @@ exports.deleteIngredient = async (req, res) => {
     });
   }
 };
+
+// Mettre à jour la quantité en stock d'un ingrédient
+exports.updateIngredientQuantity = async (req, res) => {
+  try {
+    const ingredient = await Ingredient.findByIdAndUpdate(req.params.id, 
+      { $inc: { quantite: req.body.quantiteChange } }, // Incrémente ou décrémente la quantité
+      { new: true, runValidators: true }
+    );
+    res.status(200).json({
+      status: 'success',
+      data: {
+        ingredient
+      }
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 'fail',
+      message: err.message
+    });
+  }
+};
+

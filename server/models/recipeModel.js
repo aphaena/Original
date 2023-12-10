@@ -1,14 +1,17 @@
-// recipeModel.js
+// models/recipeModel.js
 
 const mongoose = require('mongoose');
 
 const recipeSchema = new mongoose.Schema({
   title: { type: String, required: true },
   description: String,
-  ingredients: { 
-    name: String, 
-    quantity: String 
-  },
+  ingredients: [{
+    ingredient: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Ingredient'
+    },
+    quantity: String
+  }],
   steps: [String],
   prepTime: Number,
   images: [String],
@@ -20,7 +23,8 @@ const recipeSchema = new mongoose.Schema({
   },
   category: {
     type: String,
-    enum: ['vegetarian', 'dessert', 'quick', 'etc'],
+    required: true
+    //enum: ['vegetarian', 'dessert', 'quick', 'etc'],
   },
   // Ajoutez d'autres champs nécessaires ici
 });
